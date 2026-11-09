@@ -1518,10 +1518,10 @@ static int zcan_set_data_bittiming(struct net_device *netdev)
 {
 	struct zcan_channel *ch = netdev_priv(netdev);
 
-	if (ch->can.fd.data_bittiming.bitrate != ch->can.bittiming.bitrate) {
+	if (ch->can.data_bittiming.bitrate != ch->can.bittiming.bitrate) {
 		netdev_err(netdev,
 			   "dbitrate must equal bitrate (%u != %u) - bit-rate-switched CAN FD is unverified on this device, see zcan_usb.c header\n",
-			   ch->can.fd.data_bittiming.bitrate,
+			   ch->can.data_bittiming.bitrate,
 			   ch->can.bittiming.bitrate);
 		return -EINVAL;
 	}
@@ -1619,8 +1619,8 @@ static int zcan_probe(struct usb_interface *intf,
 
 		/* CAN FD data phase - see zcan_set_data_bittiming() for the
 		 * same-rate-only limitation. */
-		ch->can.fd.data_bittiming_const  = &zcan_bittiming_const;
-		ch->can.fd.do_set_data_bittiming = zcan_set_data_bittiming;
+		ch->can.data_bittiming_const  = &zcan_bittiming_const;
+		ch->can.do_set_data_bittiming = zcan_set_data_bittiming;
 
 		SET_NETDEV_DEV(netdev, &intf->dev);
 		/* can_set_default_mtu() isn't exported on all kernels; set
@@ -1754,7 +1754,7 @@ static void zcan_disconnect(struct usb_interface *intf)
 }
 
 static const struct usb_device_id zcan_id_table[] = {
-	{ USB_DEVICE(ZCAN_VENDOR_ID, ZCAN_PRODUCT_ID) },
+	{ USB_DEVICE(0x3068, 0x0009) }, // ZLG USBCANFD-100U-mini
 	{ }
 };
 MODULE_DEVICE_TABLE(usb, zcan_id_table);
